@@ -30,8 +30,13 @@ for (let i = 0; i < 13; i++) {
     enemies.push(enemy);
 }
 
-let vx = 4;
-let bulletVY = 5;
+let score = 0;
+let tl = new TimelineMax();
+
+tl.set("#score", { text: score.toString() });
+
+let vx = 6;
+let bulletVY = 7;
 
 window.addEventListener("keydown", (event) => {
     if (event.which === 39) {
@@ -64,6 +69,8 @@ window.addEventListener("keydown", (event) => {
                     app.stage.removeChild(enemy);
                     app.stage.removeChild(bullet);
                     enemies.splice(index, 1);
+                    score += 40;
+                    tl.to("#score", { text: score.toString() });
                 }
             })
         })
