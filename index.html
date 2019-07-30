@@ -6,17 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/plugins/TextPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TimelineMax.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.0/pixi.js"></script>
 </head>
 
 <body>
-    <div>
-        <h4>Score: <span id="score"></span></h4>
+    <div id="scoreContainer">
+        <p>Score: <span id="score"></span></p>
+    </div>
+    <div id="win">
+        <h1>YOU WIN</h1>
+        <h1>SCORE: <span id="winScore"></span></h1>
     </div>
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TimelineMax.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.1/pixi.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/plugins/TextPlugin.min.js"></script>
+<script src="./Explosion.js"></script>
+<script src="./Shooter.js"></script>
+<script src="./Bullet.js"></script>
+<script src="./Enemy.js"></script>
 <script src="index.js"></script>
 
 </html>
