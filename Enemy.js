@@ -18,13 +18,36 @@ class Enemy extends PIXI.Sprite {
         this.parentContainer = parent;
         this.app = app;
 
+        this.lives = [];
+
+        for (let i = 0; i < 3; i++) {
+            let live = new Live(app, parent, this.x + (i * 15), this.y + this.height)
+            this.lives.push(live);
+        }
+
+        // this.livebar = new Livebar(app, parent, this.x + 5, this.y + this.height);
         if (parent) {
             parent.addChild(this);
         }
 
+
         // this.stopShooting = setInterval(() => {
         //     this.shoot();
         // }, 2000);
+    }
+
+    hit() {
+        if (this.lives.length > 1) {
+            let live = this.lives.splice(this.lives.length - 1, 1);
+            live[0].remove();
+        } else if (this.lives.length === 1) {
+            this.remove();
+            if (this.lives[0]) {
+                this.lives[0].remove();
+                this.lives.splice(0, 1);
+            }
+        }
+
     }
 
     remove() {

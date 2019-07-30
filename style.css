@@ -20,3 +20,12 @@
     font-family: fantasy;
     text-align: center;
 }
+
+#restart {
+    border: none;
+    height: 30px;
+    width: 60px;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+}

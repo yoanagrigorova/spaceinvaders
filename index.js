@@ -3,6 +3,7 @@
  * Change score DONE
  * Shoot 3 bullets when you hit 3 consequential enemies DONE
  * Shooter lives?
+ * Restart game
  */
 
 const log = console.log;
@@ -21,25 +22,8 @@ let shooter = new Shooter(app);
 
 let enemies = [];
 
-for (let i = 0; i < 8; i++) {
-    let enemy = new Enemy(app, container, i, 30);
-    enemies.push(enemy);
-}
+renderEnemies();
 
-for (let i = 0; i < 8; i++) {
-    let enemy = new Enemy(app, container, i, 84);
-    enemies.push(enemy);
-}
-for (let i = 0; i < 8; i++) {
-    let enemy = new Enemy(app, container, i, 2 * 64);
-    enemies.push(enemy);
-}
-for (let i = 0; i < 8; i++) {
-    let enemy = new Enemy(app, container, i, 3 * 64);
-    enemies.push(enemy);
-}
-
-let score = 0;
 let tl = new TimelineLite({
     repeat: 0
 });
@@ -57,47 +41,36 @@ tlContainer.to(container, 5, {
     x: app.screen.width - container.width,
 })
 
-
+let score = 0;
 tl.set("#score", { text: score.toString() });
-
-let numOfHits = 0;
-
-let stoppedTicker = false;
-
-let threeBullets = false;
 
 var pkeys = [];
 window.onkeydown = function(e) {
     var code = e.keyCode ? e.keyCode : e.which;
     pkeys[code] = true;
     animate();
-
-
 }
+
 window.onkeyup = function(e) {
     var code = e.keyCode ? e.keyCode : e.which;
     pkeys[code] = false;
     animate();
-
 };
 
 
-function animate() {
-    // start the timer for the next animation loop
-    let animation = requestAnimationFrame(animate);
+let threeBullets = false;
 
-    if (pkeys[39]) { //up key
+function animate() {
+
+    if (pkeys[39]) {
         shooter.moveRight();
-        cancelAnimationFrame(animation);
     }
-    if (pkeys[37]) { //down key
+    if (pkeys[37]) {
         shooter.moveLeft();
-        cancelAnimationFrame(animation);
     }
 
     if (pkeys[32]) {
         let hit = false;
-
         if (threeBullets) {
             shootThreeBullets()
         } else {
@@ -110,38 +83,13 @@ function animate() {
             });
         }
 
-        cancelAnimationFrame(animation);
 
 
     }
 }
 
-// window.addEventListener("keydown", (event) => {
-//     if (event.which === 39) {
-//         shooter.moveRight();
-//     }
-
-//     if (event.which === 37) {
-//         shooter.moveLeft();
-//     }
-
-//     if (event.which === 32) {
-//         let hit = false;
-
-//         if (threeBullets) {
-//             shootThreeBullets()
-//         } else {
-//             shootOneBullet(hit, (numOfHits) => {
-//                 if (numOfHits >= 3) {
-//                     threeBullets = true;
-//                 } else {
-//                     threeBullets = false;
-//                 }
-//             });
-//         }
-
-//     }
-// })
+let numOfHits = 0;
+let stoppedTicker = false;
 
 function shootOneBullet(hit, callback) {
     let bullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
@@ -154,10 +102,11 @@ function shootOneBullet(hit, callback) {
                 hit = true;
                 stoppedTicker = true;
                 bullet.remove();
-                enemy.remove();
-                enemies.splice(index, 1);
+                enemy.hit();
+                if (enemy.lives.length === 0) enemies.splice(index, 1);
+                // enemies.splice(index, 1);
                 score += 40;
-                tl.to("#score", 0.5, { text: score.toString() });
+                tl.to("#score", 0.1, { text: score.toString() });
                 if (!enemies.length) {
                     renderWin();
                 }
@@ -202,10 +151,11 @@ function shootThreeBullets() {
                 if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
                     (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
                     bullet.remove();
-                    enemy.remove();
-                    enemies.splice(index, 1);
+                    enemy.hit();
+
+                    if (enemy.lives.length <= 0) enemies.splice(index, 1);
                     score += 40;
-                    tl.to("#score", 0.5, { text: score.toString() });
+                    tl.to("#score", 0.1, { text: score.toString() });
                     if (!enemies.length) {
                         renderWin();
                     }
@@ -229,5 +179,45 @@ function renderWin() {
         .fromTo("#win", 2, {
             opacity: 0,
             scale: 0
-        }, { opacity: 1, scale: 1 })
+        }, { opacity: 1, scale: 1 });
+
+    document.getElementById("restart").addEventListener("click", restart);
+
+}
+
+function restart() {
+    winTl
+        .fromTo("#win", 1, { opacity: 1, scale: 1 }, {
+            opacity: 0,
+            scale: 0
+        })
+
+    score = 0;
+    enemies.forEach(e => e.remove());
+    enemies = [];
+    tl.to("#score", 0.5, { text: score.toString() });
+    renderEnemies();
+    document.getElementById("restart").removeEventListener("click", restart);
+}
+
+function renderEnemies() {
+    let rowCount = 6;
+    for (let i = 0; i < rowCount; i++) {
+        let enemy = new Enemy(app, container, i, 30);
+        enemies.push(enemy);
+    }
+
+    for (let i = 0; i < rowCount; i++) {
+        let enemy = new Enemy(app, container, i, 85);
+        enemies.push(enemy);
+    }
+
+    for (let i = 0; i < rowCount; i++) {
+        let enemy = new Enemy(app, container, i, 2 * 70);
+        enemies.push(enemy);
+    }
+    for (let i = 0; i < rowCount; i++) {
+        let enemy = new Enemy(app, container, i, 3 * 65);
+        enemies.push(enemy);
+    }
 }
