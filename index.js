@@ -2,8 +2,10 @@
  * To Do:
  * Change score DONE
  * Shoot 3 bullets when you hit 3 consequential enemies DONE
- * Shooter lives?
- * Restart game
+ * Shooter lives? DONE
+ * Restart game ALMOST DONE
+ * Render enemies with one loop
+ * Abstract more
  */
 
 const log = console.log;
@@ -19,10 +21,16 @@ let container = new PIXI.Container();
 container.x = 0;
 app.stage.addChild(container);
 let shooter = new Shooter(app);
+let shields = [];
+
+for (let i = 0; i < 4; i++) {
+    let shield = new Shield(app, app.stage, (i * 200) + 50, shooter.y - 200);
+    shields.push(shield);
+}
 
 let enemies = [];
 
-renderEnemies();
+renderEnemies(shooter);
 
 let tl = new TimelineLite({
     repeat: 0
@@ -33,16 +41,20 @@ let tlContainer = new TimelineMax({
     yoyo: true
 })
 
-let winTl = new TimelineLite({
-    repeat: 0
-});
+let winTl = new TimelineLite();
 
-tlContainer.to(container, 5, {
+tlContainer.to(container, 10, {
     x: app.screen.width - container.width,
+    onUpdate: () => {
+        enemies.forEach((enemy) => {
+            // log(enemy.getPosition());
+            // enemy.shoot();
+        })
+    }
 })
 
-let score = 0;
-tl.set("#score", { text: score.toString() });
+// let score = 0;
+tl.set("#score", { text: shooter.score.toString() });
 
 var pkeys = [];
 window.onkeydown = function(e) {
@@ -96,6 +108,14 @@ function shootOneBullet(hit, callback) {
     app.ticker.add(function hitTarget() {
         bullet.shoot();
 
+        shields.forEach((shield) => {
+            if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
+                (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
+                bullet.remove();
+                app.ticker.remove(hitTarget);
+            }
+        })
+
         enemies.forEach((enemy, index) => {
             if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
                 (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
@@ -105,8 +125,8 @@ function shootOneBullet(hit, callback) {
                 enemy.hit();
                 if (enemy.lives.length === 0) enemies.splice(index, 1);
                 // enemies.splice(index, 1);
-                score += 40;
-                tl.to("#score", 0.1, { text: score.toString() });
+                shooter.score += 40;
+                tl.to("#score", 0.1, { text: shooter.score.toString() });
                 if (!enemies.length) {
                     renderWin();
                 }
@@ -119,7 +139,6 @@ function shootOneBullet(hit, callback) {
             app.ticker.remove(hitTarget);
         }
 
-
         if (!hit && stoppedTicker) {
             numOfHits = 0;
             stoppedTicker = false;
@@ -130,13 +149,11 @@ function shootOneBullet(hit, callback) {
         }
 
         callback(numOfHits);
-
     })
 }
 
 
 function shootThreeBullets() {
-
     let middleBullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
     let leftBullet = new Bullet(app.stage, shooter.x - (shooter.width / 2) + 3, shooter.y);
     let rightBullet = new Bullet(app.stage, shooter.x + (shooter.width / 2) - 3, shooter.y);
@@ -147,6 +164,14 @@ function shootThreeBullets() {
         app.ticker.add(function hitTarget() {
             bullet.shoot();
 
+            shields.forEach((shield) => {
+                if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
+                    (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
+                    bullet.remove();
+                    app.ticker.remove(hitTarget);
+                }
+            })
+
             enemies.forEach((enemy, index) => {
                 if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
                     (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
@@ -154,8 +179,8 @@ function shootThreeBullets() {
                     enemy.hit();
 
                     if (enemy.lives.length <= 0) enemies.splice(index, 1);
-                    score += 40;
-                    tl.to("#score", 0.1, { text: score.toString() });
+                    shooter.score += 40;
+                    tl.to("#score", 0.1, { text: shooter.score.toString() });
                     if (!enemies.length) {
                         renderWin();
                     }
@@ -175,7 +200,7 @@ function shootThreeBullets() {
 
 function renderWin() {
     winTl
-        .set("#winScore", { text: score.toString() })
+        .set("#winScore", { text: shooter.score.toString() })
         .fromTo("#win", 2, {
             opacity: 0,
             scale: 0
@@ -192,10 +217,11 @@ function restart() {
             scale: 0
         })
 
-    score = 0;
+    shooter.score = 0;
+    threeBullets = false;
     enemies.forEach(e => e.remove());
     enemies = [];
-    tl.to("#score", 0.5, { text: score.toString() });
+    tl.to("#score", 0.5, { text: shooter.score.toString() });
     renderEnemies();
     document.getElementById("restart").removeEventListener("click", restart);
 }
@@ -203,21 +229,22 @@ function restart() {
 function renderEnemies() {
     let rowCount = 6;
     for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 30);
+        let enemy = new Enemy(app, container, i, 30, shooter, shields);
         enemies.push(enemy);
     }
 
     for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 85);
+        let enemy = new Enemy(app, container, i, 85, shooter, shields);
         enemies.push(enemy);
     }
 
     for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 2 * 70);
+        let enemy = new Enemy(app, container, i, 2 * 70, shooter, shields);
         enemies.push(enemy);
     }
-    for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 3 * 65);
-        enemies.push(enemy);
-    }
+
+    // for (let i = 0; i < rowCount; i++) {
+    //     let enemy = new Enemy(app, container, i, 3 * 65, shooter, shields);
+    //     enemies.push(enemy);
+    // }
 }

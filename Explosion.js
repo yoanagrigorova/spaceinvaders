@@ -1,9 +1,17 @@
+/**
+ * To Do:
+ * Fix first explosion error DONE
+ */
+
 class Explosion extends PIXI.Sprite {
     constructor(app = null, x, y) {
         super(PIXI.Texture.from("./assets/explosion.png"));
+
+        this.texture.baseTexture.width = 250;
+        this.texture.baseTexture.height = 250;
+
         this.container = new PIXI.Container();
         this.container.addChild(this);
-
 
         this.container.x = x;
         this.container.y = y;

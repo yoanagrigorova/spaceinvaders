@@ -9,7 +9,13 @@
     font-size: x-large;
 }
 
-#win {
+#scoreContainer p {
+    width: 450px;
+    float: left;
+}
+
+#win,
+#lose {
     display: inline-block;
     position: absolute;
     color: white;

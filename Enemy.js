@@ -2,11 +2,12 @@
  * To Do:
  * Explosion when enemy is hit DONE
  * Movement of enemy DONE
- * Enemy shooting at shooter?
+ * Enemy shooting at shooter? DONE
+ * Render lost game text
  */
 
 class Enemy extends PIXI.Sprite {
-    constructor(app, parent, index, y = 0) {
+    constructor(app, parent, index, y = 0, shooter, shields) {
         super(PIXI.Texture.from("./assets/target.png"));
 
         this.height = 50;
@@ -14,6 +15,8 @@ class Enemy extends PIXI.Sprite {
 
         this.x = index * (this.width + 20);
         this.y = y;
+        this.shooter = shooter;
+        this.shields = shields;
 
         this.parentContainer = parent;
         this.app = app;
@@ -25,15 +28,13 @@ class Enemy extends PIXI.Sprite {
             this.lives.push(live);
         }
 
-        // this.livebar = new Livebar(app, parent, this.x + 5, this.y + this.height);
         if (parent) {
             parent.addChild(this);
         }
 
-
-        // this.stopShooting = setInterval(() => {
-        //     this.shoot();
-        // }, 2000);
+        this.stopShooting = setInterval(() => {
+            this.shoot();
+        }, (Math.random() * 9000) + 2000);
     }
 
     hit() {
@@ -50,10 +51,17 @@ class Enemy extends PIXI.Sprite {
 
     }
 
+    getPosition() {
+        return {
+            x: (this.x + (this.width / 2)) + this.parent.x,
+            y: this.y + this.height
+        }
+    }
+
     remove() {
         this.parentContainer.removeChild(this);
         this.explode();
-        // clearInterval(this.stopShooting);
+        clearInterval(this.stopShooting);
     }
 
     explode() {
@@ -62,10 +70,52 @@ class Enemy extends PIXI.Sprite {
     }
 
     shoot() {
-        let bullet = new Bullet(this.app.stage, this.x + (this.width / 2), this.y + this.height);
+        const { x, y } = this.getPosition();
+        let me = this;
+        let bullet = new Bullet(this.app.stage, x, y);
+
         this.app.ticker.add(function shoot() {
             bullet.enemyShoot();
+
+            me.shields.forEach((shield) => {
+                if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
+                    (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
+                    bullet.remove();
+                    me.app.ticker.remove(shoot);
+                }
+            })
+
+            me.shooter.isHit(bullet, (hit) => {
+                if (hit) {
+                    me.app.ticker.remove(shoot);
+                    me.shooter.updateLives();
+                    bullet.remove();
+                }
+                if (me.shooter.lives === 0) {
+                    shooter.lostGame = true;
+                    me.shooter.lives--;
+                    bullet.remove();
+                    me.app.ticker.remove(shoot);
+
+                    let tl = new TimelineMax();
+                    tl
+                        .set("#loseScore", { text: me.shooter.score.toString() })
+                        .fromTo("#lose", 2, {
+                            opacity: 0,
+                            scale: 0
+                        }, { opacity: 1, scale: 1 });
+
+                    me.shooter.remove();
+
+                }
+            });
+
+            if (me.shooter.lostGame) {
+                bullet.remove();
+                clearInterval(me.stopShooting);
+            }
         })
+
     }
 
 }
