@@ -5,13 +5,14 @@ class Shooter extends PIXI.Sprite {
         this.width = 60;
         this.height = 60;
         this.anchor.set(0.5);
-        this.vx = 10;
+        this.vx = 15;
         this.score = 0;
         this.lostGame = false;
 
         this.lives = 5;
         this.livebar = [];
-        this.parentContainer = parent.stage;
+
+        this.parentContainer = parent;
 
         this.y = parent.screen.height - (this.height / 2);
         this.x = parent.screen.width / 2;
@@ -21,11 +22,16 @@ class Shooter extends PIXI.Sprite {
     }
 
     moveRight() {
-        this.x += this.vx;
+        if (this.x <= this.parentContainer.screen.width) {
+            this.x += this.vx;
+        }
     }
 
     moveLeft() {
-        this.x -= this.vx;
+        if (this.x > 0) {
+            this.x -= this.vx;
+
+        }
     }
 
     updateLives() {
@@ -51,7 +57,7 @@ class Shooter extends PIXI.Sprite {
         let container = new PIXI.Container();
         container.x = 260;
         container.y = 5;
-        this.parentContainer.addChild(container);
+        this.parentContainer.stage.addChild(container);
         for (let i = 0; i < this.lives; i++) {
             let live = new Live(app, container, container.x + (20 * i), 0);
             this.livebar.push(live);
@@ -59,6 +65,14 @@ class Shooter extends PIXI.Sprite {
     }
 
     remove() {
-        this.parentContainer.removeChild(this);
+        this.parentContainer.stage.removeChild(this);
+    }
+
+    restart() {
+        this.remove();
+        this.lives = 5;
+        this.livebar = [];
+        this.renderLives();
+        this.parentContainer.stage.addChild(this);
     }
 }

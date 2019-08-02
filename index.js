@@ -4,8 +4,6 @@
  * Shoot 3 bullets when you hit 3 consequential enemies DONE
  * Shooter lives? DONE
  * Restart game ALMOST DONE
- * Render enemies with one loop
- * Abstract more
  */
 
 const log = console.log;
@@ -19,6 +17,7 @@ app.stage.addChild(background);
 
 let container = new PIXI.Container();
 container.x = 0;
+container.y = 30;
 app.stage.addChild(container);
 let shooter = new Shooter(app);
 let shields = [];
@@ -44,16 +43,9 @@ let tlContainer = new TimelineMax({
 let winTl = new TimelineLite();
 
 tlContainer.to(container, 10, {
-    x: app.screen.width - container.width,
-    onUpdate: () => {
-        enemies.forEach((enemy) => {
-            // log(enemy.getPosition());
-            // enemy.shoot();
-        })
-    }
+    x: app.screen.width - container.width
 })
 
-// let score = 0;
 tl.set("#score", { text: shooter.score.toString() });
 
 var pkeys = [];
@@ -81,7 +73,7 @@ function animate() {
         shooter.moveLeft();
     }
 
-    if (pkeys[32]) {
+    if (pkeys[32] && shooter.lives > 0) {
         let hit = false;
         if (threeBullets) {
             shootThreeBullets()
@@ -94,9 +86,6 @@ function animate() {
                 }
             });
         }
-
-
-
     }
 }
 
@@ -108,10 +97,14 @@ function shootOneBullet(hit, callback) {
     app.ticker.add(function hitTarget() {
         bullet.shoot();
 
-        shields.forEach((shield) => {
+        shields.forEach((shield, index) => {
             if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
                 (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
                 bullet.remove();
+                shield.updateHealth();
+                if (shield.health === 0) {
+                    shields.splice(index, 1);
+                }
                 app.ticker.remove(hitTarget);
             }
         })
@@ -119,17 +112,11 @@ function shootOneBullet(hit, callback) {
         enemies.forEach((enemy, index) => {
             if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
                 (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
+
                 hit = true;
                 stoppedTicker = true;
-                bullet.remove();
-                enemy.hit();
-                if (enemy.lives.length === 0) enemies.splice(index, 1);
-                // enemies.splice(index, 1);
-                shooter.score += 40;
-                tl.to("#score", 0.1, { text: shooter.score.toString() });
-                if (!enemies.length) {
-                    renderWin();
-                }
+
+                renderHitTarget(bullet, enemy, index);
                 app.ticker.remove(hitTarget);
             }
         })
@@ -164,9 +151,13 @@ function shootThreeBullets() {
         app.ticker.add(function hitTarget() {
             bullet.shoot();
 
-            shields.forEach((shield) => {
+            shields.forEach((shield, index) => {
                 if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
                     (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
+                    shield.updateHealth();
+                    if (shield.health === 0) {
+                        shields.splice(index, 1);
+                    }
                     bullet.remove();
                     app.ticker.remove(hitTarget);
                 }
@@ -175,15 +166,8 @@ function shootThreeBullets() {
             enemies.forEach((enemy, index) => {
                 if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
                     (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
-                    bullet.remove();
-                    enemy.hit();
 
-                    if (enemy.lives.length <= 0) enemies.splice(index, 1);
-                    shooter.score += 40;
-                    tl.to("#score", 0.1, { text: shooter.score.toString() });
-                    if (!enemies.length) {
-                        renderWin();
-                    }
+                    renderHitTarget(bullet, enemy, index);
                     app.ticker.remove(hitTarget);
                 }
             })
@@ -198,19 +182,21 @@ function shootThreeBullets() {
     })
 }
 
+
 function renderWin() {
     winTl
+        .set("#result", { text: "YOU WIN" })
         .set("#winScore", { text: shooter.score.toString() })
         .fromTo("#win", 2, {
             opacity: 0,
             scale: 0
         }, { opacity: 1, scale: 1 });
 
-    document.getElementById("restart").addEventListener("click", restart);
+    document.getElementById("restartWon").addEventListener("click", restartWon);
 
 }
 
-function restart() {
+function restartWon() {
     winTl
         .fromTo("#win", 1, { opacity: 1, scale: 1 }, {
             opacity: 0,
@@ -223,28 +209,44 @@ function restart() {
     enemies = [];
     tl.to("#score", 0.5, { text: shooter.score.toString() });
     renderEnemies();
-    document.getElementById("restart").removeEventListener("click", restart);
+    shooter.restart();
+    shields = [];
+    for (let i = 0; i < 4; i++) {
+        let shield = new Shield(app, app.stage, (i * 200) + 50, shooter.y - 200);
+        shields.push(shield);
+    }
+    document.getElementById("restartWon").removeEventListener("click", restartWon);
 }
 
 function renderEnemies() {
     let rowCount = 6;
     for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 30, shooter, shields);
+        let enemy = new Enemy(app, container, i, 0, shooter, shields);
         enemies.push(enemy);
     }
 
     for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 85, shooter, shields);
+        let enemy = new Enemy(app, container, i, 60, shooter, shields);
         enemies.push(enemy);
     }
 
     for (let i = 0; i < rowCount; i++) {
-        let enemy = new Enemy(app, container, i, 2 * 70, shooter, shields);
+        let enemy = new Enemy(app, container, i, 2 * 60, shooter, shields);
         enemies.push(enemy);
     }
+}
 
-    // for (let i = 0; i < rowCount; i++) {
-    //     let enemy = new Enemy(app, container, i, 3 * 65, shooter, shields);
-    //     enemies.push(enemy);
-    // }
+function renderHitTarget(bullet, enemy, index) {
+    bullet.remove();
+    enemy.hit();
+
+    if (enemy.lives.length <= 0) enemies.splice(index, 1);
+
+    shooter.score += 40;
+    tl.to("#score", 0.1, { text: shooter.score.toString() });
+
+    if (!enemies.length) {
+        renderWin();
+    }
+
 }

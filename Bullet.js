@@ -7,7 +7,7 @@ class Bullet extends PIXI.Sprite {
         this.anchor.set(0.5);
         this.y = y;
         this.x = x;
-        this.vy = 7;
+        this.vy = 10;
         this.parentContainer = parent;
 
         if (parent) {
@@ -25,7 +25,7 @@ class Bullet extends PIXI.Sprite {
     }
 
     enemyShoot() {
-        this.y += this.vy;
+        this.y += (this.vy - 3);
 
         if (this.y >= 700) {
             this.remove();

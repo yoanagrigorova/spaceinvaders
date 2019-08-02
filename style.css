@@ -27,7 +27,7 @@
     text-align: center;
 }
 
-#restart {
+.restartButton {
     border: none;
     height: 30px;
     width: 60px;

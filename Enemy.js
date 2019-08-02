@@ -3,7 +3,7 @@
  * Explosion when enemy is hit DONE
  * Movement of enemy DONE
  * Enemy shooting at shooter? DONE
- * Render lost game text
+ * Render lost game text DONE
  */
 
 class Enemy extends PIXI.Sprite {
@@ -61,6 +61,7 @@ class Enemy extends PIXI.Sprite {
     remove() {
         this.parentContainer.removeChild(this);
         this.explode();
+        this.lives.forEach(live => live.remove());
         clearInterval(this.stopShooting);
     }
 
@@ -77,10 +78,14 @@ class Enemy extends PIXI.Sprite {
         this.app.ticker.add(function shoot() {
             bullet.enemyShoot();
 
-            me.shields.forEach((shield) => {
+            me.shields.forEach((shield, index) => {
                 if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
                     (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
                     bullet.remove();
+                    shield.updateHealth();
+                    if (shield.health === 0) {
+                        shields.splice(index, 1);
+                    }
                     me.app.ticker.remove(shoot);
                 }
             })
@@ -96,17 +101,8 @@ class Enemy extends PIXI.Sprite {
                     me.shooter.lives--;
                     bullet.remove();
                     me.app.ticker.remove(shoot);
-
-                    let tl = new TimelineMax();
-                    tl
-                        .set("#loseScore", { text: me.shooter.score.toString() })
-                        .fromTo("#lose", 2, {
-                            opacity: 0,
-                            scale: 0
-                        }, { opacity: 1, scale: 1 });
-
                     me.shooter.remove();
-
+                    me.renederLostGame();
                 }
             });
 
@@ -116,6 +112,18 @@ class Enemy extends PIXI.Sprite {
             }
         })
 
+    }
+
+    renederLostGame() {
+        let tl = new TimelineMax();
+        tl
+            .set("#result", { text: "YOU LOSE" })
+            .set("#winScore", { text: this.shooter.score.toString() })
+            .fromTo("#win", 2, {
+                opacity: 0,
+                scale: 0
+            }, { opacity: 1, scale: 1 });
+        document.getElementById("restartWon").addEventListener("click", restartWon);
     }
 
 }
