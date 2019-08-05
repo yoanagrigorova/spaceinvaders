@@ -97,7 +97,7 @@ class Enemy extends PIXI.Sprite {
                     bullet.remove();
                 }
                 if (me.shooter.lives === 0) {
-                    shooter.lostGame = true;
+                    me.shooter.lostGame = true;
                     me.shooter.lives--;
                     bullet.remove();
                     me.app.ticker.remove(shoot);
@@ -123,7 +123,7 @@ class Enemy extends PIXI.Sprite {
                 opacity: 0,
                 scale: 0
             }, { opacity: 1, scale: 1 });
-        document.getElementById("restartWon").addEventListener("click", restartWon);
+        document.getElementById("restartWon").addEventListener("mouseup", restart);
     }
 
 }

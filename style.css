@@ -35,3 +35,25 @@
     background: white;
     cursor: pointer;
 }
+
+#start {
+    display: inline-block;
+    position: absolute;
+    top: 250px;
+    left: 250px;
+    color: white;
+    cursor: pointer;
+    z-index: 999999;
+}
+
+#start button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    height: 70px;
+    width: 300px;
+    background: white;
+    font-size: 40px;
+    font-weight: bold;
+    color: #00011F;
+}

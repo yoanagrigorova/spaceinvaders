@@ -1,12 +1,13 @@
 /**
  * To Do:
- * Fix first explosion error DONE
+ * Fix first explosion error DONE 
  */
 
 class Explosion extends PIXI.Sprite {
-    constructor(app = null, x, y) {
+    constructor(app, x, y) {
         super(PIXI.Texture.from("./assets/explosion.png"));
 
+        //give width and height of the original spritesheet in order to not have an error on first explosion
         this.texture.baseTexture.width = 250;
         this.texture.baseTexture.height = 250;
 
@@ -14,7 +15,7 @@ class Explosion extends PIXI.Sprite {
         this.container.addChild(this);
 
         this.container.x = x;
-        this.container.y = y;
+        this.container.y = y + 30;
 
         this.rect = new PIXI.Rectangle(0, 0, 62, 62);
         this.texture.frame = this.rect;

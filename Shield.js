@@ -7,7 +7,7 @@ class Shield extends PIXI.Sprite {
         this.x = x;
         this.y = y;
 
-        this.health = 20;
+        this.health = 40;
 
         this.parentContainer = parent;
         this.app = app;
@@ -29,8 +29,8 @@ class Shield extends PIXI.Sprite {
     }
 
     restart() {
-        this.health = 20;
-        this.parentContainer.removeChild(this);
+        this.remove();
+        this.health = 40;
         this.parentContainer.addChild(this);
     }
 
