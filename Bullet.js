@@ -13,7 +13,6 @@ class Bullet extends PIXI.Sprite {
         if (parent) {
             parent.addChild(this);
         }
-
     }
 
     shoot() {

@@ -9,7 +9,7 @@ class Shooter extends PIXI.Sprite {
         this.score = 0;
         this.lostGame = false;
 
-        this.lives = 5;
+        this.lives = 10;
         this.livebar = [];
 
         this.parentContainer = parent;
@@ -31,7 +31,6 @@ class Shooter extends PIXI.Sprite {
     moveLeft() {
         if (this.x > 0) {
             this.x -= this.vx;
-
         }
     }
 
@@ -53,7 +52,6 @@ class Shooter extends PIXI.Sprite {
         return callback(hit);
     }
 
-
     renderLives() {
         this.container.x = 260;
         this.container.y = 5;
@@ -65,13 +63,13 @@ class Shooter extends PIXI.Sprite {
     }
 
     remove() {
-        this.parentContainer.stage.removeChild(this.container);
+        this.container.children.length = 0;
         this.parentContainer.stage.removeChild(this);
     }
 
     restart() {
         this.remove();
-        this.lives = 5;
+        this.lives = 10;
         this.livebar = [];
         this.renderLives();
         this.parentContainer.stage.addChild(this);

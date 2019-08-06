@@ -33,5 +33,4 @@ class Shield extends PIXI.Sprite {
         this.health = 40;
         this.parentContainer.addChild(this);
     }
-
 }

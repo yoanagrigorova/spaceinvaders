@@ -48,7 +48,6 @@ class Enemy extends PIXI.Sprite {
                 this.lives.splice(0, 1);
             }
         }
-
     }
 
     getPosition() {
@@ -84,7 +83,7 @@ class Enemy extends PIXI.Sprite {
                     bullet.remove();
                     shield.updateHealth();
                     if (shield.health === 0) {
-                        shields.splice(index, 1);
+                        me.shields.splice(index, 1);
                     }
                     me.app.ticker.remove(shoot);
                 }
@@ -102,7 +101,7 @@ class Enemy extends PIXI.Sprite {
                     bullet.remove();
                     me.app.ticker.remove(shoot);
                     me.shooter.remove();
-                    me.renederLostGame();
+                    renederLostGame(winTl, me.shooter, restart);
                 }
             });
 
@@ -111,19 +110,5 @@ class Enemy extends PIXI.Sprite {
                 clearInterval(me.stopShooting);
             }
         })
-
     }
-
-    renederLostGame() {
-        let tl = new TimelineMax();
-        tl
-            .set("#result", { text: "YOU LOSE" })
-            .set("#winScore", { text: this.shooter.score.toString() })
-            .fromTo("#win", 2, {
-                opacity: 0,
-                scale: 0
-            }, { opacity: 1, scale: 1 });
-        document.getElementById("restartWon").addEventListener("mouseup", restart);
-    }
-
 }
