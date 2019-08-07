@@ -29,6 +29,7 @@ class Explosion extends PIXI.Sprite {
     explode() {
         let frames = 0;
         let me = this;
+
         app.ticker.add(function animation() {
             if (frames < 3) {
                 me.rect.x += 62;

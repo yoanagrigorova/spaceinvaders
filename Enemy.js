@@ -65,6 +65,12 @@ class Enemy extends PIXI.Sprite {
     }
 
     explode() {
+        let explodeSound = new Howl({
+            src: ['./assets/sounds/invaderkilled.wav'],
+            volume: 0.25,
+        });
+
+        explodeSound.play();
         let explosion = new Explosion(this.app, this.x + this.parentContainer.x, this.y);
         explosion.explode();
     }
@@ -101,6 +107,11 @@ class Enemy extends PIXI.Sprite {
                     bullet.remove();
                     me.app.ticker.remove(shoot);
                     me.shooter.remove();
+                    let killed = new Howl({
+                        src: ['./assets/sounds/explosion.wav'],
+                        volume: 0.25,
+                    });
+                    killed.play();
                     renederLostGame(winTl, me.shooter, restart);
                 }
             });

@@ -107,8 +107,15 @@ function renderGame() {
     let numOfHits = 0;
     let stoppedTicker = false;
 
+    let shoot = new Howl({
+        src: ['./assets/sounds/shoot.wav'],
+        volume: 0.25,
+    });
+
     function shootOneBullet(hit, callback) {
         let bullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
+        shoot.play();
+
         app.ticker.add(function hitTarget() {
             bullet.shoot();
 
@@ -160,6 +167,8 @@ function renderGame() {
         let rightBullet = new Bullet(app.stage, shooter.x + (shooter.width / 2) - 3, shooter.y);
 
         let bullets = [leftBullet, middleBullet, rightBullet];
+
+        shoot.play();
 
         bullets.forEach((bullet) => {
             app.ticker.add(function hitTarget() {

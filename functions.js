@@ -15,7 +15,7 @@ let enemies = [];
 
 function renderEnemies(shooter, shields) {
     let rowCount = 6;
-    let rows = 3;
+    let rows = 4;
     for (let i = 0; i < rows * rowCount; i++) {
         let row = Math.floor(i / rowCount);
         let enemy = new Enemy(app, container, i % rowCount, row * 60, shooter, shields);
