@@ -7,14 +7,16 @@
  */
 
 class Enemy extends PIXI.Sprite {
-    constructor(app, parent, index, y = 0, shooter, shields) {
-        super(PIXI.Texture.from("./assets/target.png"));
+    constructor(parent, index, y = 0, picture = "target", liveCount = 2) {
+        super(PIXI.Texture.from("./assets/" + picture + ".png"));
 
         this.height = 50;
         this.width = 50;
 
         this.x = index * (this.width + 20);
         this.y = y;
+        this.points = 50;
+
         this.shooter = shooter;
         this.shields = shields;
 
@@ -23,8 +25,8 @@ class Enemy extends PIXI.Sprite {
 
         this.lives = [];
 
-        for (let i = 0; i < 3; i++) {
-            let live = new Live(app, parent, this.x + (i * 15), this.y + this.height)
+        for (let i = 0; i < liveCount; i++) {
+            let live = new Live(app, parent, this.x + (i * 15) + 5, this.y + this.height)
             this.lives.push(live);
         }
 
@@ -71,7 +73,7 @@ class Enemy extends PIXI.Sprite {
         });
 
         explodeSound.play();
-        let explosion = new Explosion(this.app, this.x + this.parentContainer.x, this.y);
+        let explosion = new Explosion(this.x + this.parentContainer.x, this.y);
         explosion.explode();
     }
 
@@ -83,38 +85,29 @@ class Enemy extends PIXI.Sprite {
         this.app.ticker.add(function shoot() {
             bullet.enemyShoot();
 
-            me.shields.forEach((shield, index) => {
-                if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
-                    (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
-                    bullet.remove();
-                    shield.updateHealth();
-                    if (shield.health === 0) {
-                        me.shields.splice(index, 1);
-                    }
-                    me.app.ticker.remove(shoot);
-                }
-            })
+            if (hitShield(bullet)) {
+                app.ticker.remove(shoot);
+            }
 
-            me.shooter.isHit(bullet, (hit) => {
-                if (hit) {
-                    me.app.ticker.remove(shoot);
-                    me.shooter.updateLives();
-                    bullet.remove();
-                }
-                if (me.shooter.lives === 0) {
-                    me.shooter.lostGame = true;
-                    me.shooter.lives--;
-                    bullet.remove();
-                    me.app.ticker.remove(shoot);
-                    me.shooter.remove();
-                    let killed = new Howl({
-                        src: ['./assets/sounds/explosion.wav'],
-                        volume: 0.25,
-                    });
-                    killed.play();
-                    renederLostGame(winTl, me.shooter, restart);
-                }
-            });
+            if (me.shooter.isHit(bullet)) {
+                me.app.ticker.remove(shoot);
+                me.shooter.updateLives();
+                bullet.remove();
+            }
+
+            if (me.shooter.lives === 0) {
+                me.shooter.lostGame = true;
+                me.shooter.lives--;
+                bullet.remove();
+                me.app.ticker.remove(shoot);
+                me.shooter.remove();
+                let killed = new Howl({
+                    src: ['./assets/sounds/explosion.wav'],
+                    volume: 0.25,
+                });
+                killed.play();
+                renederLostGame(winTl, me.shooter, restart);
+            }
 
             if (me.shooter.lostGame) {
                 bullet.remove();

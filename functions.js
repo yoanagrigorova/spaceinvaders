@@ -15,11 +15,17 @@ let enemies = [];
 
 function renderEnemies(shooter, shields) {
     let rowCount = 6;
-    let rows = 4;
+    let rows = 3;
     for (let i = 0; i < rows * rowCount; i++) {
         let row = Math.floor(i / rowCount);
-        let enemy = new Enemy(app, container, i % rowCount, row * 60, shooter, shields);
-        enemies.push(enemy);
+        if (row === 0) {
+            let enemy = new Boss(container, i % rowCount, row * 60);
+            enemies.push(enemy);
+        } else {
+            let enemy = new Enemy(container, i % rowCount, row * 60);
+            enemies.push(enemy);
+        }
+
     }
 }
 
@@ -64,10 +70,27 @@ function renderHitTarget(shooter, bullet, enemy, index) {
 
     if (enemy.lives.length <= 0) enemies.splice(index, 1);
 
-    shooter.score += 40;
+    shooter.score += enemy.points;
     tl.to("#score", 0.1, { text: shooter.score.toString() });
 
     if (!enemies.length) {
         renderWin(winTl, shooter, restartWon);
     }
+}
+
+function hitShield(bullet) {
+    let hit = false;
+    shields.forEach((shield, index) => {
+        if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
+            (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
+            bullet.remove();
+            shield.updateHealth();
+            if (shield.health === 0) {
+                shields.splice(index, 1);
+            }
+
+            hit = true;
+        }
+    });
+    return hit;
 }

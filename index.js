@@ -21,6 +21,8 @@ container.y = 30;
 
 // let lostGame = null;
 let restart = null;
+let shooter = null;
+let shields = [];
 
 let winTl = new TimelineLite();
 
@@ -37,8 +39,7 @@ function renderGame() {
     document.getElementById("scoreContainer").style.visibility = "visible";
 
     app.stage.addChild(container);
-    let shooter = new Shooter(app);
-    let shields = [];
+    shooter = new Shooter(app);
 
     for (let i = 0; i < 4; i++) {
         let shield = new Shield(app, app.stage, (i * 200) + 50, shooter.y - 200);
@@ -46,6 +47,8 @@ function renderGame() {
     }
 
     renderEnemies(shooter, shields);
+
+    // let length = enemies.length;
 
     tlContainer.to(container, 10, {
         x: app.screen.width - container.width
@@ -114,22 +117,14 @@ function renderGame() {
 
     function shootOneBullet(hit, callback) {
         let bullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
-        shoot.play();
+        // shoot.play();
 
         app.ticker.add(function hitTarget() {
             bullet.shoot();
 
-            shields.forEach((shield, index) => {
-                if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
-                    (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
-                    bullet.remove();
-                    shield.updateHealth();
-                    if (shield.health === 0) {
-                        shields.splice(index, 1);
-                    }
-                    app.ticker.remove(hitTarget);
-                }
-            })
+            if (hitShield(bullet)) {
+                app.ticker.remove(hitTarget);
+            }
 
             enemies.forEach((enemy, index) => {
                 if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
@@ -168,23 +163,15 @@ function renderGame() {
 
         let bullets = [leftBullet, middleBullet, rightBullet];
 
-        shoot.play();
+        // shoot.play();
 
         bullets.forEach((bullet) => {
             app.ticker.add(function hitTarget() {
                 bullet.shoot();
 
-                shields.forEach((shield, index) => {
-                    if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
-                        (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
-                        shield.updateHealth();
-                        if (shield.health === 0) {
-                            shields.splice(index, 1);
-                        }
-                        bullet.remove();
-                        app.ticker.remove(hitTarget);
-                    }
-                })
+                if (hitShield(bullet)) {
+                    app.ticker.remove(hitTarget);
+                }
 
                 enemies.forEach((enemy, index) => {
                     if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&

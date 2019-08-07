@@ -42,14 +42,12 @@ class Shooter extends PIXI.Sprite {
         }
     }
 
-    isHit(bullet, callback) {
-        let hit = false;
+    isHit(bullet) {
         if ((bullet.x >= this.x - (this.width / 2) && bullet.x <= this.x + (this.width / 2)) &&
             bullet.y >= this.y - (this.height / 2) && bullet.y <= this.y + (this.height / 2)) {
-            hit = true;
+            return true;
         }
-
-        return callback(hit);
+        return false;
     }
 
     renderLives() {

@@ -4,7 +4,7 @@
  */
 
 class Explosion extends PIXI.Sprite {
-    constructor(app, x, y) {
+    constructor(x, y) {
         super(PIXI.Texture.from("./assets/explosion.png"));
 
         //give width and height of the original spritesheet in order to not have an error on first explosion
