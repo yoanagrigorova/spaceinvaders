@@ -23,7 +23,7 @@ function keyboard(keyCode) {
             key.isDown = false;
             key.isUp = true;
         }
-        event.preventDefault();
+        // event.preventDefault();
     };
 
     //Attach event listeners

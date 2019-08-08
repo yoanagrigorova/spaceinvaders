@@ -26,7 +26,7 @@ class Enemy extends PIXI.Sprite {
         this.lives = [];
 
         for (let i = 0; i < liveCount; i++) {
-            let live = new Live(app, parent, this.x + (i * 15) + 5, this.y + this.height)
+            let live = new Live(app, parent, liveCount === 2 ? this.x + (i * 15) + 7 : this.x + (i * 15) - 3, this.y + this.height)
             this.lives.push(live);
         }
 
@@ -34,15 +34,24 @@ class Enemy extends PIXI.Sprite {
             parent.addChild(this);
         }
 
+        this.interval = (Math.random() * 12000) + 2000;
+
         this.stopShooting = setInterval(() => {
             this.shoot();
-        }, (Math.random() * 9000) + 2000);
+        }, this.interval);
+
+        this.explodeSound = new Howl({
+            src: ['./assets/sounds/invaderkilled.wav'],
+            volume: 0.25,
+        });
     }
 
     hit() {
         if (this.lives.length > 1) {
             let live = this.lives.splice(this.lives.length - 1, 1);
             live[0].remove();
+            this.explodeSound.play();
+            // this.explode();
         } else if (this.lives.length === 1) {
             this.remove();
             if (this.lives[0]) {
@@ -67,12 +76,7 @@ class Enemy extends PIXI.Sprite {
     }
 
     explode() {
-        let explodeSound = new Howl({
-            src: ['./assets/sounds/invaderkilled.wav'],
-            volume: 0.25,
-        });
-
-        explodeSound.play();
+        this.explodeSound.play();
         let explosion = new Explosion(this.x + this.parentContainer.x, this.y);
         explosion.explode();
     }
@@ -98,6 +102,7 @@ class Enemy extends PIXI.Sprite {
             if (me.shooter.lives === 0) {
                 me.shooter.lostGame = true;
                 me.shooter.lives--;
+
                 bullet.remove();
                 me.app.ticker.remove(shoot);
                 me.shooter.remove();

@@ -14,8 +14,7 @@
     float: left;
 }
 
-#win,
-#lose {
+#resultContainer {
     display: inline-block;
     position: absolute;
     color: white;

@@ -19,7 +19,6 @@ let container = new PIXI.Container();
 container.x = 0;
 container.y = 30;
 
-// let lostGame = null;
 let restart = null;
 let shooter = null;
 let shields = [];
@@ -35,6 +34,14 @@ let tlContainer = new TimelineMax({
     yoyo: true
 })
 
+// app.ticker.add(() => {
+//     let x = Math.random() * app.screen.width;
+//     let y = Math.random() * app.screen.height;
+
+//     let explosion = new Explosion(x, y);
+//     explosion.explode();
+// })
+
 function renderGame() {
     document.getElementById("scoreContainer").style.visibility = "visible";
 
@@ -47,8 +54,6 @@ function renderGame() {
     }
 
     renderEnemies(shooter, shields);
-
-    // let length = enemies.length;
 
     tlContainer.to(container, 10, {
         x: app.screen.width - container.width
@@ -83,13 +88,7 @@ function renderGame() {
         if (threeBullets) {
             shootThreeBullets()
         } else {
-            shootOneBullet(hit, (numOfHits) => {
-                if (numOfHits >= 3) {
-                    threeBullets = true;
-                } else {
-                    threeBullets = false;
-                }
-            });
+            shootOneBullet(hit);
         }
     }
 
@@ -115,7 +114,7 @@ function renderGame() {
         volume: 0.25,
     });
 
-    function shootOneBullet(hit, callback) {
+    function shootOneBullet(hit) {
         let bullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
         // shoot.play();
 
@@ -150,9 +149,10 @@ function renderGame() {
                 numOfHits++;
                 hit = false;
                 stoppedTicker = false;
+                if (numOfHits >= 3) {
+                    threeBullets = true;
+                }
             }
-
-            callback(numOfHits);
         })
     }
 
@@ -196,7 +196,7 @@ function renderGame() {
         container.children.length = 0;
         shooter.lostGame = false;
         winTl
-            .fromTo("#win", 1, { opacity: 1, scale: 1 }, {
+            .fromTo("#resultContainer", 1, { opacity: 1, scale: 1 }, {
                 opacity: 0,
                 scale: 0
             })
@@ -213,6 +213,6 @@ function renderGame() {
             let shield = new Shield(app, app.stage, (i * 200) + 50, shooter.y - 200);
             shields.push(shield);
         }
-        document.getElementById("restartWon").removeEventListener("mouseup", restartWon);
+        document.getElementById("restart").removeEventListener("mouseup", restartWon);
     }
 }

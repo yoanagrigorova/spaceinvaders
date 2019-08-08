@@ -13,7 +13,7 @@ start.fromTo("#start", 1.5, {
 
 let enemies = [];
 
-function renderEnemies(shooter, shields) {
+function renderEnemies() {
     let rowCount = 6;
     let rows = 3;
     for (let i = 0; i < rows * rowCount; i++) {
@@ -43,25 +43,25 @@ document.getElementById("start").addEventListener("mouseup", (event) => {
 function renderWin(winTl, shooter, restartWon) {
     winTl
         .set("#result", { text: "YOU WIN" })
-        .set("#winScore", { text: shooter.score.toString() })
-        .fromTo("#win", 2, {
+        .set("#score", { text: shooter.score.toString() })
+        .fromTo("#resultContainer", 2, {
             opacity: 0,
             scale: 0
         }, { opacity: 1, scale: 1 });
 
-    document.getElementById("restartWon").addEventListener("mouseup", restart);
+    document.getElementById("restart").addEventListener("mouseup", restart);
 }
 
 function renederLostGame(winTl, shooter, restartWon) {
     winTl
         .set("#result", { text: "YOU LOSE" })
-        .set("#winScore", { text: shooter.score.toString() })
-        .fromTo("#win", 2, {
+        .set("#score", { text: shooter.score.toString() })
+        .fromTo("#resultContainer", 2, {
             opacity: 0,
             scale: 0
         }, { opacity: 1, scale: 1 });
 
-    document.getElementById("restartWon").addEventListener("mouseup", restartWon);
+    document.getElementById("restart").addEventListener("mouseup", restartWon);
 }
 
 function renderHitTarget(shooter, bullet, enemy, index) {
@@ -74,7 +74,7 @@ function renderHitTarget(shooter, bullet, enemy, index) {
     tl.to("#score", 0.1, { text: shooter.score.toString() });
 
     if (!enemies.length) {
-        renderWin(winTl, shooter, restartWon);
+        renderWin(winTl, shooter, restart);
     }
 }
 
