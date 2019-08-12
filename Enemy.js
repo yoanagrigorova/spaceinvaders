@@ -42,8 +42,8 @@ class Enemy extends PIXI.Sprite {
         if (this.lives.length > 1) {
             let live = this.lives.splice(this.lives.length - 1, 1);
             live[0].remove();
-            this.explodeSound.play();
-            // this.explode();
+            // this.explodeSound.play();
+            this.explode();
         } else if (this.lives.length === 1) {
             this.remove();
             if (this.lives[0]) {

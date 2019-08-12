@@ -1,9 +1,9 @@
 class Explosion extends PIXI.Sprite {
     constructor(x, y) {
-        super(PIXI.Texture.from("./assets/explosion.png"));
+        super(PIXI.Texture.from("./assets/explosion1.png"));
 
-        this.texture.baseTexture.width = 250;
-        this.texture.baseTexture.height = 250;
+        this.texture.baseTexture.width = 256;
+        this.texture.baseTexture.height = 256;
 
         this.container = new PIXI.Container();
         this.container.addChild(this);
@@ -12,7 +12,7 @@ class Explosion extends PIXI.Sprite {
         this.container.y = y;
         this.container.scale.set(1.2);
 
-        this.rect = new PIXI.Rectangle(0, 0, 62, 62);
+        this.rect = new PIXI.Rectangle(0, 0, 64, 64);
         this.rect.x = 0;
         this.rect.y = 0;
         this.texture.frame = this.rect;
@@ -37,17 +37,18 @@ class Explosion extends PIXI.Sprite {
         let me = this;
 
         me.rect.y = 0;
-        me.rect.x = 0;
+        me.rect.x = -me.rect.width;
         app.ticker.add(function animation() {
-            if (frames < 12) {
-                if (frames % 3 === 0 && frames !== 0) {
-                    me.rect.y += 62;
+            if (frames < 16) {
+                if (frames % 4 === 0 && frames !== 0) {
+                    frames++;
+                    me.rect.y += me.rect.height;
                     me.rect.x = 0;
                 } else {
-                    me.rect.x += 62;
+                    me.rect.x += me.rect.width;
+                    frames++;
                 }
                 me.texture.frame = me.rect;
-                frames++;
             } else {
                 me.app.ticker.remove(animation);
                 me.app.stage.removeChild(me.container);
