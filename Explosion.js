@@ -1,8 +1,3 @@
-/**
- * To Do:
- * Fix first explosion error DONE 
- */
-
 class Explosion extends PIXI.Sprite {
     constructor(x, y) {
         super(PIXI.Texture.from("./assets/explosion.png"));
@@ -14,7 +9,7 @@ class Explosion extends PIXI.Sprite {
         this.container.addChild(this);
 
         this.container.x = x;
-        this.container.y = y + 30;
+        this.container.y = y;
         this.container.scale.set(1.2);
 
         this.rect = new PIXI.Rectangle(0, 0, 62, 62);
@@ -37,7 +32,6 @@ class Explosion extends PIXI.Sprite {
     }
 
     explode() {
-        log(this.container._zIndex);
         this.explodeSound.play();
         let frames = 0;
         let me = this;

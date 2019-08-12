@@ -20,8 +20,6 @@ class Shooter extends PIXI.Sprite {
         parent.stage.addChild(this);
 
         this.renderLives();
-
-        log(this._zIndex);
     }
 
     moveRight() {
@@ -37,7 +35,8 @@ class Shooter extends PIXI.Sprite {
     }
 
     updateLives() {
-
+        let explosion = new Explosion(this.x - this.width / 2, this.y - this.height / 2);
+        explosion.explode();
         if (this.lives > 0) {
             this.lives--;
             let live = this.livebar.splice(this.lives, 1);
@@ -64,9 +63,6 @@ class Shooter extends PIXI.Sprite {
     }
 
     remove() {
-        let explosion = new Explosion(this.x, this.y);
-        explosion.explode();
-        log(explosion);
         this.container.children.length = 0;
         this.parentContainer.stage.removeChild(this);
 

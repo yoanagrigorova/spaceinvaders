@@ -1,11 +1,3 @@
-/**
- * To Do:
- * Explosion when enemy is hit DONE
- * Movement of enemy DONE
- * Enemy shooting at shooter? DONE
- * Render lost game text DONE
- */
-
 class Enemy extends PIXI.Sprite {
     constructor(parent, index, y = 0, picture = "target", liveCount = 2) {
         super(PIXI.Texture.from("./assets/" + picture + ".png"));
@@ -77,7 +69,7 @@ class Enemy extends PIXI.Sprite {
 
     explode() {
         this.explodeSound.play();
-        let explosion = new Explosion(this.x + this.parentContainer.x, this.y);
+        let explosion = new Explosion(this.x + this.parentContainer.x, this.y + this.parentContainer.y);
         explosion.explode();
     }
 
@@ -90,6 +82,7 @@ class Enemy extends PIXI.Sprite {
             bullet.enemyShoot();
 
             if (hitShield(bullet)) {
+                bullet.remove();
                 app.ticker.remove(shoot);
             }
 
@@ -117,6 +110,10 @@ class Enemy extends PIXI.Sprite {
             if (me.shooter.lostGame) {
                 bullet.remove();
                 clearInterval(me.stopShooting);
+            }
+
+            if (bullet.y > app.screen.height) {
+                bullet.remove();
             }
         })
     }
