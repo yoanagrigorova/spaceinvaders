@@ -25,8 +25,15 @@ function renderEnemies() {
             let enemy = new Enemy(container, i % rowCount, row * 60);
             enemies.push(enemy);
         }
-
     }
+
+    let interval = setInterval(() => {
+        if (enemies.length) {
+            enemies[Math.floor(Math.random() * enemies.length)].shoot();
+        } else {
+            clearInterval(interval);
+        }
+    }, 1000);
 }
 
 document.getElementById("start").addEventListener("mouseup", (event) => {

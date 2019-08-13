@@ -26,9 +26,6 @@ class Explosion extends PIXI.Sprite {
             src: ['./assets/sounds/invaderkilled.wav'],
             volume: 0.25,
         });
-
-        this.container._zIndex = 9999;
-
     }
 
     explode() {

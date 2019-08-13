@@ -33,6 +33,7 @@ class Bullet extends PIXI.Sprite {
 
     remove() {
         this.vy = 0;
+        this.y = 10000;
         this.parentContainer.removeChild(this);
     }
 }
