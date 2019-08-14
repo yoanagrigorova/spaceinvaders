@@ -54,7 +54,7 @@ class Shooter extends PIXI.Sprite {
     }
 
     renderLives() {
-        this.container.x = 260;
+        this.container.x = 250;
         this.container.y = 5;
         this.parentContainer.stage.addChild(this.container);
         for (let i = 0; i < this.lives; i++) {
