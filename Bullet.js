@@ -26,14 +26,12 @@ class Bullet extends PIXI.Sprite {
     enemyShoot() {
         this.y += (this.vy - 3);
 
-        if (this.y >= 700) {
+        if (this.y >= app.screen.height) {
             this.remove();
         }
     }
 
     remove() {
-        this.vy = 0;
-        this.y = 10000;
         this.parentContainer.removeChild(this);
     }
 }

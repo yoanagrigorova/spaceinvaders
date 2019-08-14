@@ -22,34 +22,32 @@ class Explosion extends PIXI.Sprite {
             app.stage.addChild(this.container);
         }
 
-        this.explodeSound = new Howl({
+        this.explosionSound = new Howl({
             src: ['./assets/sounds/invaderkilled.wav'],
             volume: 0.25,
         });
     }
 
     explode() {
-        this.explodeSound.play();
+        this.explosionSound.play();
         let frames = 0;
-        let me = this;
+        this.rect.y = 0;
+        this.rect.x = -this.rect.width;
 
-        me.rect.y = 0;
-        me.rect.x = -me.rect.width;
         app.ticker.add(function animation() {
             if (frames < 16) {
                 if (frames % 4 === 0 && frames !== 0) {
-                    frames++;
-                    me.rect.y += me.rect.height;
-                    me.rect.x = 0;
+                    this.rect.y += this.rect.height;
+                    this.rect.x = 0;
                 } else {
-                    me.rect.x += me.rect.width;
-                    frames++;
+                    this.rect.x += this.rect.width;
                 }
-                me.texture.frame = me.rect;
+                this.texture.frame = this.rect;
+                frames++;
             } else {
-                me.app.ticker.remove(animation);
-                me.app.stage.removeChild(me.container);
+                this.app.ticker.remove(animation);
+                this.app.stage.removeChild(this.container);
             }
-        })
+        }, this)
     }
 }

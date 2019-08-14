@@ -26,12 +26,6 @@ class Enemy extends PIXI.Sprite {
             parent.addChild(this);
         }
 
-        // this.interval = (Math.random() * 12000) + 2000;
-
-        // this.stopShooting = setInterval(() => {
-        //     this.shoot();
-        // }, this.interval);
-
         this.explodeSound = new Howl({
             src: ['./assets/sounds/invaderkilled.wav'],
             volume: 0.25,
@@ -64,7 +58,6 @@ class Enemy extends PIXI.Sprite {
         this.parentContainer.removeChild(this);
         this.explode();
         this.lives.forEach(live => live.remove());
-        // clearInterval(this.stopShooting);
     }
 
     explode() {
@@ -109,13 +102,9 @@ class Enemy extends PIXI.Sprite {
                 renederLostGame(winTl, me.shooter, restart);
             }
 
-            if (me.shooter.lostGame) {
+            if (me.shooter.lostGame || bullet.y >= app.screen.height) {
                 bullet.remove();
-                // clearInterval(me.stopShooting);
-            }
-
-            if (bullet.y >= app.screen.height) {
-                bullet.remove();
+                me.app.ticker.remove(shoot);
             }
         })
     }

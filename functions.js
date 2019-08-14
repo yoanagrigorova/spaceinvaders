@@ -11,8 +11,6 @@ start.fromTo("#start", 1.5, {
     },
 });
 
-let enemies = [];
-
 function renderEnemies() {
     let rowCount = 6;
     let rows = 3;
@@ -104,7 +102,7 @@ function hitShield(bullet) {
 
 function shootOneBullet(hit) {
     let bullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
-    // shoot.play();
+    shoot.play();
 
     app.ticker.add(function hitTarget() {
         bullet.shoot();
@@ -151,7 +149,7 @@ function shootThreeBullets() {
 
     let bullets = [leftBullet, middleBullet, rightBullet];
 
-    // shoot.play();
+    shoot.play();
 
     bullets.forEach((bullet) => {
         app.ticker.add(function hitTarget() {

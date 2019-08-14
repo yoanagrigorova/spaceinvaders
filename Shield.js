@@ -7,7 +7,7 @@ class Shield extends PIXI.Sprite {
         this.x = x;
         this.y = y;
 
-        this.health = 40;
+        this.health = 20;
 
         this.parentContainer = parent;
         this.app = app;

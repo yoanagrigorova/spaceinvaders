@@ -13,6 +13,7 @@ container.y = 30;
 
 let restart = null;
 let shooter = null;
+let enemies = [];
 let shields = [];
 let numOfHits = 0;
 let stoppedTicker = false;
