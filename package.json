@@ -1,24 +1,20 @@
 {
-  "name": "space-invaders",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yoanagrigorova/spaceinvaders.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/yoanagrigorova/spaceinvaders/issues"
-  },
-  "homepage": "https://github.com/yoanagrigorova/spaceinvaders#readme",
-  "dependencies": {
-    "clientside-require": "^4.7.2",
-    "pixi-sound": "^3.0.3",
-    "pixi.js-keyboard": "^1.0.9"
-  }
+    "name": "space-invaders",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yoanagrigorova/spaceinvaders.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/yoanagrigorova/spaceinvaders/issues"
+    },
+    "homepage": "https://github.com/yoanagrigorova/spaceinvaders#readme",
+    "dependencies": {}
 }

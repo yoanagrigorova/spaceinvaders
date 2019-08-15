@@ -13,7 +13,7 @@ function keyboard(keyCode) {
             key.isDown = true;
             key.isUp = false;
         }
-        event.preventDefault();
+        // event.preventDefault();
     };
 
     //The `upHandler`
