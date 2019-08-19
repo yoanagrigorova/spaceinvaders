@@ -52,7 +52,7 @@ function renderGame() {
         x: app.screen.width - container.width,
     })
 
-    tl.set("#score", { text: shooter.score.toString() });
+    tl.to("#score", 0.1, { text: shooter.score.toString() });
 
     let left = keyboard(37),
         right = keyboard(39),

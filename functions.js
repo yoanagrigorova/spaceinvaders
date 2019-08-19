@@ -1,15 +1,33 @@
 let start = new TimelineMax();
 
-start.fromTo("#start", 1.5, {
+start.fromTo("#start", 0.5, {
     scale: 0,
-    opacity: 0
+    opacity: 0,
 }, {
     scale: 1,
-    opacity: 1,
+    opacity: 0.7,
     onStart: function() {
         document.getElementById("scoreContainer").style.visibility = "hidden";
     },
+    onComplete: () => {
+        document.getElementById("start").addEventListener("mouseover", zoomIn);
+        document.getElementById("start").addEventListener("mouseout", zoomOut);
+    }
 });
+
+function zoomIn() {
+    start.to("#start", 0.5, {
+        scale: 1.5,
+        opacity: 1
+    })
+}
+
+function zoomOut() {
+    start.to("#start", 0.5, {
+        scale: 1,
+        opacity: 0.7
+    })
+}
 
 function renderEnemies() {
     let rowCount = 6;
@@ -41,6 +59,11 @@ document.getElementById("start").addEventListener("mouseup", (event) => {
     }, {
         scale: 0,
         opacity: 0,
+        x: -800,
+        onStart: () => {
+            document.getElementById("start").removeEventListener("mouseover", zoomIn);
+            document.getElementById("start").removeEventListener("mouseout", zoomOut);
+        },
         onComplete: renderGame
     })
 })
