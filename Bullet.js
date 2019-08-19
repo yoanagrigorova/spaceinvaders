@@ -15,6 +15,14 @@ class Bullet extends PIXI.Sprite {
         }
     }
 
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
+
     shoot() {
         this.y -= this.vy;
 

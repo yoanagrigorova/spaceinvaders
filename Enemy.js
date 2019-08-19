@@ -32,6 +32,30 @@ class Enemy extends PIXI.Sprite {
         });
     }
 
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
+
+    getLives() {
+        return this.lives.length;
+    }
+
+    getPoints() {
+        return this.points;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+
+    getWidth() {
+        return this.width;
+    }
+
     hit() {
         if (this.lives.length > 1) {
             let live = this.lives.splice(this.lives.length - 1, 1);
@@ -87,9 +111,9 @@ class Enemy extends PIXI.Sprite {
                 bullet.remove();
             }
 
-            if (me.shooter.lives === 0) {
+            if (me.shooter.getLives() === 0) {
                 me.shooter.lostGame = true;
-                me.shooter.lives--;
+                me.shooter.decreaseLives(-1);
 
                 bullet.remove();
                 me.app.ticker.remove(shoot);
@@ -102,7 +126,7 @@ class Enemy extends PIXI.Sprite {
                 renederLostGame(winTl, me.shooter, restart);
             }
 
-            if (me.shooter.lostGame || bullet.y >= app.screen.height) {
+            if (me.shooter.lostGame || bullet.getY() >= app.screen.height) {
                 bullet.remove();
                 me.app.ticker.remove(shoot);
             }

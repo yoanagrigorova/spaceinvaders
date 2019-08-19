@@ -22,16 +22,40 @@ class Shooter extends PIXI.Sprite {
         this.renderLives();
     }
 
-    moveRight() {
-        if (this.x <= this.parentContainer.screen.width) {
-            this.x += this.vx;
-        }
+    getWidth() {
+        return this.width;
     }
 
-    moveLeft() {
-        if (this.x > 0) {
-            this.x -= this.vx;
-        }
+    getHeight() {
+        return this.height;
+    }
+
+    getScore() {
+        return this.score;
+    }
+
+    getLives() {
+        return this.lives;
+    }
+
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
+
+    setVx(value) {
+        this.vx = value;
+    }
+
+    increaseScore(value) {
+        this.score += value;
+    }
+
+    decreaseLives(value) {
+        this.lives -= value;
     }
 
     updateLives(bullet) {

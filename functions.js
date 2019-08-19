@@ -73,9 +73,9 @@ function renderHitTarget(shooter, bullet, enemy, index) {
     bullet.remove();
     enemy.hit();
 
-    if (enemy.lives.length <= 0) enemies.splice(index, 1);
+    if (enemy.getLives() <= 0) enemies.splice(index, 1);
 
-    shooter.score += enemy.points;
+    shooter.increaseScore(enemy.getPoints());
     tl.to("#score", 0.1, { text: shooter.score.toString() });
 
     if (!enemies.length) {
@@ -86,11 +86,11 @@ function renderHitTarget(shooter, bullet, enemy, index) {
 function hitShield(bullet) {
     let hit = false;
     shields.forEach((shield, index) => {
-        if ((bullet.y >= shield.y && bullet.y <= shield.y + shield.height) &&
-            (bullet.x >= shield.x && bullet.x <= shield.x + shield.width)) {
+        if ((bullet.getY() >= shield.getY() && bullet.getY() <= shield.getY() + shield.getHeight()) &&
+            (bullet.getX() >= shield.getX() && bullet.getX() <= shield.getX() + shield.getWidth())) {
             bullet.remove();
             shield.updateHealth();
-            if (shield.health === 0) {
+            if (shield.getHealth() === 0) {
                 shields.splice(index, 1);
             }
 
@@ -112,8 +112,8 @@ function shootOneBullet(hit) {
         }
 
         enemies.forEach((enemy, index) => {
-            if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
-                (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
+            if ((bullet.getY() >= enemy.getY() && bullet.getY() <= enemy.getY() + enemy.getHeight()) &&
+                (bullet.getX() >= enemy.getX() + container.x && bullet.getX() <= enemy.getX() + enemy.getWidth() + container.x)) {
 
                 hit = true;
                 stoppedTicker = true;
@@ -143,9 +143,9 @@ function shootOneBullet(hit) {
 }
 
 function shootThreeBullets() {
-    let middleBullet = new Bullet(app.stage, shooter.x, shooter.y - (shooter.height / 2));
-    let leftBullet = new Bullet(app.stage, shooter.x - (shooter.width / 2) + 3, shooter.y);
-    let rightBullet = new Bullet(app.stage, shooter.x + (shooter.width / 2) - 3, shooter.y);
+    let middleBullet = new Bullet(app.stage, shooter.getX(), shooter.getY() - (shooter.getHeight / 2));
+    let leftBullet = new Bullet(app.stage, shooter.getX() - (shooter.getWidth() / 2) + 3, shooter.getY());
+    let rightBullet = new Bullet(app.stage, shooter.getX() + (shooter.getWidth() / 2) - 3, shooter.getY());
 
     let bullets = [leftBullet, middleBullet, rightBullet];
 
@@ -160,15 +160,15 @@ function shootThreeBullets() {
             }
 
             enemies.forEach((enemy, index) => {
-                if ((bullet.y >= enemy.y && bullet.y <= enemy.y + enemy.height) &&
-                    (bullet.x >= enemy.x + container.x && bullet.x <= enemy.x + enemy.width + container.x)) {
+                if ((bullet.getY() >= enemy.getY() && bullet.getY() <= enemy.getY() + enemy.getHeight()) &&
+                    (bullet.getX() >= enemy.getX() + container.x && bullet.getX() <= enemy.getX() + enemy.getWidth() + container.x)) {
 
                     renderHitTarget(shooter, bullet, enemy, index);
                     app.ticker.remove(hitTarget);
                 }
             })
 
-            if (bullet.y <= 0) {
+            if (bullet.getY() <= 0) {
                 app.ticker.remove(hitTarget);
             }
         })

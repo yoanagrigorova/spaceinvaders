@@ -17,6 +17,18 @@ class Shield extends PIXI.Sprite {
         }
     }
 
+    getX() {
+        return this.x;
+    }
+
+    getY() {
+        return this.y;
+    }
+
+    getHealth() {
+        return this.health;
+    }
+
     updateHealth() {
         this.health--;
         if (this.health === 0) {
@@ -24,13 +36,15 @@ class Shield extends PIXI.Sprite {
         }
     }
 
-    remove() {
-        this.parentContainer.removeChild(this);
+    getHeight() {
+        return this.height;
     }
 
-    restart() {
-        this.remove();
-        this.health = 40;
-        this.parentContainer.addChild(this);
+    getWidth() {
+        return this.width;
+    }
+
+    remove() {
+        this.parentContainer.removeChild(this);
     }
 }
