@@ -166,7 +166,7 @@ function shootOneBullet(hit) {
 }
 
 function shootThreeBullets() {
-    let middleBullet = new Bullet(app.stage, shooter.getX(), shooter.getY() - (shooter.getHeight / 2));
+    let middleBullet = new Bullet(app.stage, shooter.getX(), shooter.getY() - (shooter.getHeight() / 2));
     let leftBullet = new Bullet(app.stage, shooter.getX() - (shooter.getWidth() / 2) + 3, shooter.getY());
     let rightBullet = new Bullet(app.stage, shooter.getX() + (shooter.getWidth() / 2) - 3, shooter.getY());
 
